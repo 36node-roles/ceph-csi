@@ -1,0 +1,54 @@
+---
+- name: Add rook-release chart repo
+  community.kubernetes.helm_repository:
+    state: present
+    name: rook-release
+    repo_url: "https://charts.rook.io/release"
+
+- name: Deploy rook-ceph
+  community.kubernetes.helm:
+    state: "{{ ceph_state }}"
+    name: rook-ceph
+    namespace: "{{ namespace }}"
+    create_namespace: true
+    chart_version: v1.6.2
+    chart_ref: rook-release/rook-ceph
+    values: "{{ lookup('template', 'values.yaml.j2', variable_start_string='[%', variable_end_string='%]') | from_yaml | combine(ceph_chart_values, recursive=True) }}"
+    wait: yes
+  register: ceph_installed
+
+- name: Ceph cluster
+  community.kubernetes.k8s:
+    state: "{{ ceph_state }}"
+    namespace: "{{ namespace }}"
+    template: cluster.yaml.j2
+    wait: yes
+    wait_condition:
+      reason: ClusterCreated
+      status: "True"
+      type: Ready
+    wait_timeout: 1200
+
+- name: rdb Storageclass
+  community.kubernetes.k8s:
+    state: "{{ ceph_state }}"
+    template: rdb-sc.yaml.j2
+    wait: yes
+
+- name: cephfs Storageclass
+  community.kubernetes.k8s:
+    state: "{{ ceph_state }}"
+    template: cephfs-sc.yaml.j2
+    wait: yes
+
+- name: Create ingress
+  community.kubernetes.k8s:
+    state: "{{ ceph_state }}"
+    namespace: "{{ namespace }}"
+    template: ingress.yaml.j2
+
+- name: Create toolbox
+  community.kubernetes.k8s:
+    state: "{{ ceph_toolbox_state }}"
+    namespace: "{{ namespace }}"
+    template: toolbox.yaml.j2
