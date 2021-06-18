@@ -27,8 +27,8 @@
       reason: ClusterCreated
       status: "True"
       type: Ready
-    wait_timeout: 1m
-    # wait_timeout: 15m
+    wait_timeout: 300
+    # wait_timeout: 1200
 
 - name: rdb Storageclass
   community.kubernetes.k8s:
