@@ -30,6 +30,12 @@
     wait_timeout: 300
     # wait_timeout: 1200
 
+- name: ceph filesystem
+  community.kubernetes.k8s:
+    state: "{{ ceph_state }}"
+    template: ceph-filesystem.yaml.j2
+    wait: yes
+
 - name: rdb Storageclass
   community.kubernetes.k8s:
     state: "{{ ceph_state }}"
