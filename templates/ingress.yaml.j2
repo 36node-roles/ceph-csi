@@ -5,7 +5,6 @@ metadata:
   name: rook-ceph
   annotations:
     kubernetes.io/ingress.class: traefik
-    cert-manager.io/cluster-issuer: "{{ cert_issuer }}"
 spec:
   rules:
     - host: "ceph.{{ domain }}"
@@ -15,7 +14,3 @@ spec:
               serviceName: rook-ceph-mgr-dashboard
               servicePort: 7000
             path: /
-  tls:
-    - secretName: "ceph.{{ domain }}"
-      hosts:
-        - "ceph.{{ domain }}"

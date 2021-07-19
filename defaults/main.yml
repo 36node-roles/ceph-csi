@@ -7,8 +7,9 @@ ceph_toolbox_state: absent
 ceph_device: vdb
 
 # images
-ceph_image_tag: v15.2.11
+ceph_image_tag: v16.2.5
 rook_image_tag: master
 
 # other chart values
 ceph_chart_values: {}
+ceph_cluster_values: {}

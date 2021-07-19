@@ -11,7 +11,7 @@
     name: rook-ceph
     namespace: "{{ namespace }}"
     create_namespace: true
-    chart_version: v1.6.2
+    chart_version: v1.6.7
     chart_ref: rook-release/rook-ceph
     values: "{{ lookup('template', 'values.yaml.j2', variable_start_string='[%', variable_end_string='%]') | from_yaml | combine(ceph_chart_values, recursive=True) }}"
     wait: yes
@@ -21,13 +21,13 @@
   community.kubernetes.k8s:
     state: "{{ ceph_state }}"
     namespace: "{{ namespace }}"
-    template: cluster.yaml.j2
+    values: "{{ lookup('template', 'cluster.yaml.j2') | from_yaml | combine(ceph_cluster_values, recursive=True) }}"
     wait: yes
     wait_condition:
       reason: ClusterCreated
       status: "True"
       type: Ready
-    # wait_timeout: 1200
+    wait_timeout: 1200
 
 - name: ceph filesystem
   community.kubernetes.k8s:
