@@ -21,7 +21,7 @@
   community.kubernetes.k8s:
     state: "{{ ceph_state }}"
     namespace: "{{ namespace }}"
-    values: "{{ lookup('template', 'cluster.yaml.j2') | from_yaml | combine(ceph_cluster_values, recursive=True) }}"
+    definition: "{{ lookup('template', 'cluster.yaml.j2') | from_yaml | combine(ceph_cluster_values, recursive=True) }}"
     wait: yes
     wait_condition:
       reason: ClusterCreated
