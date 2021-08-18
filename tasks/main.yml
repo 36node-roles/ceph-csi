@@ -11,41 +11,21 @@
     name: rook-ceph
     namespace: "{{ namespace }}"
     create_namespace: true
-    chart_version: v1.6.7
+    chart_version: v1.7.1
     chart_ref: rook-release/rook-ceph
-    values: "{{ lookup('template', 'values.yaml.j2', variable_start_string='[%', variable_end_string='%]') | from_yaml | combine(ceph_chart_values, recursive=True) }}"
-    wait: yes
-  register: ceph_installed
+    values: "{{ lookup('template', 'rook-ceph-values.yaml.j2') | from_yaml | combine(ceph_chart_values, recursive=True) }}"
+    wait: "{{ wait }}"
 
-- name: Ceph cluster
-  community.kubernetes.k8s:
+- name: Deploy rook-ceph-cluster
+  community.kubernetes.helm:
     state: "{{ ceph_state }}"
+    name: rook-ceph-cluster
     namespace: "{{ namespace }}"
-    definition: "{{ lookup('template', 'cluster.yaml.j2') | from_yaml | combine(ceph_cluster_values, recursive=True) }}"
-    wait: yes
-    wait_condition:
-      reason: ClusterCreated
-      status: "True"
-      type: Ready
-    wait_timeout: 1200
-
-- name: ceph filesystem
-  community.kubernetes.k8s:
-    state: "{{ ceph_state }}"
-    template: ceph-filesystem.yaml.j2
-    wait: yes
-
-- name: rdb Storageclass
-  community.kubernetes.k8s:
-    state: "{{ ceph_state }}"
-    template: rdb-sc.yaml.j2
-    wait: yes
-
-- name: cephfs Storageclass
-  community.kubernetes.k8s:
-    state: "{{ ceph_state }}"
-    template: cephfs-sc.yaml.j2
-    wait: yes
+    create_namespace: true
+    chart_version: v1.7.1
+    chart_ref: rook-release/rook-ceph-cluster
+    values: "{{ lookup('template', 'rook-ceph-cluster-values.yaml.j2') | from_yaml | combine(ceph_cluster_chart_values, recursive=True) }}"
+    wait: "{{ wait }}"
 
 - name: Create ingress
   community.kubernetes.k8s:
@@ -53,8 +33,14 @@
     namespace: "{{ namespace }}"
     template: ingress.yaml.j2
 
-- name: Create toolbox
-  community.kubernetes.k8s:
-    state: "{{ ceph_toolbox_state }}"
-    namespace: "{{ namespace }}"
-    template: toolbox.yaml.j2
+- name: Check ceph status
+  shell: kubectl -n {{ namespace }} exec -i deploy/rook-ceph-tools -- ceph status 
+  register: ceph_status
+  until: ceph_status.rc == 0 and 'HEALTH_OK' in ceph_status.stdout
+  delay: 180
+  retries: 10
+  when: wait
+
+# - name: debug
+#   debug:
+#     var: ceph_status

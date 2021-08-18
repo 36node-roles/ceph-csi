@@ -2,9 +2,12 @@
 
 安装 rook-ceph，支持 rdb 块存储及 cephfs 文件存储
 
-# 获取密码
+# Access dashboard
+
+usrename: admin
 
 ```
+kubectl -n rook-ceph get ingress
 kubectl -n rook-ceph get secret rook-ceph-dashboard-password -o jsonpath="{['data']['password']}" | base64 --decode && echo
 ```
 
@@ -27,6 +30,31 @@ Including an example of how to use your role (for instance, with variables passe
     - hosts: servers
       roles:
          - { role: username.rolename, x: 42 }
+
+## Develop guide
+
+Link to local installed role for convenience.
+
+```
+rm -rf /Users/zzs/.ansible/roles/36node.ceph-csi
+ln -s $PWD /Users/zzs/.ansible/roles/36node.ceph-csi
+```
+
+## Troubleshooting guide
+
+Debug
+
+kubectl -n rook-ceph exec -it deploy/rook-ceph-tools -- bash
+
+ceph status
+ceph osd status
+ceph df
+rados df
+ceph fs ls
+
+pvcs stay in pending state?
+
+https://rook.github.io/docs/rook/v1.5/ceph-common-issues.html#pvcs-stay-in-pending-state
 
 ## License
 
