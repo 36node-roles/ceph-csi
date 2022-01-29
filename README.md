@@ -2,6 +2,10 @@
 
 安装 rook-ceph，支持 rdb 块存储及 cephfs 文件存储
 
+安装前需要所有机器满足:
+
+https://rook.io/docs/rook/v1.0/k8s-pre-reqs.html#lvm-package
+
 # Access dashboard
 
 usrename: admin
