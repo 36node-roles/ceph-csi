@@ -4,6 +4,8 @@ state: present
 ingress_class: traefik
 wait: no
 
+rook_version: v1.7.1
+
 ceph_state: "{{ state }}"
 ceph_device: vdb
 

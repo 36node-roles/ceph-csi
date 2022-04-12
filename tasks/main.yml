@@ -11,7 +11,7 @@
     name: rook-ceph
     namespace: "{{ namespace }}"
     create_namespace: true
-    chart_version: v1.7.1
+    chart_version: "{{ rook_version }}"
     chart_ref: rook-release/rook-ceph
     values: "{{ lookup('template', 'rook-ceph-values.yaml.j2') | from_yaml | combine(ceph_chart_values, recursive=True) }}"
     wait: "{{ wait }}"
@@ -22,7 +22,7 @@
     name: rook-ceph-cluster
     namespace: "{{ namespace }}"
     create_namespace: true
-    chart_version: v1.7.1
+    chart_version: "{{ rook_version }}"
     chart_ref: rook-release/rook-ceph-cluster
     values: "{{ lookup('template', 'rook-ceph-cluster-values.yaml.j2') | from_yaml | combine(ceph_cluster_chart_values, recursive=True) }}"
     wait: "{{ wait }}"
