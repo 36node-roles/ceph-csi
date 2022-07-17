@@ -4,7 +4,7 @@
 
 安装前需要所有机器满足:
 
-https://rook.io/docs/rook/v1.0/k8s-pre-reqs.html#lvm-package
+<https://rook.io/docs/rook/v1.0/k8s-pre-reqs.html#lvm-package>
 
 # Access dashboard
 
@@ -48,7 +48,9 @@ ln -s $PWD /Users/zzs/.ansible/roles/36node.ceph-csi
 
 Debug
 
+```sh
 kubectl -n rook-ceph exec -it deploy/rook-ceph-tools -- bash
+```
 
 ceph status
 ceph osd status
@@ -58,7 +60,7 @@ ceph fs ls
 
 pvcs stay in pending state?
 
-https://rook.github.io/docs/rook/v1.5/ceph-common-issues.html#pvcs-stay-in-pending-state
+<https://rook.github.io/docs/rook/v1.5/ceph-common-issues.html#pvcs-stay-in-pending-state>
 
 ## License
 

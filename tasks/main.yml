@@ -27,12 +27,6 @@
     values: "{{ lookup('template', 'rook-ceph-cluster-values.yaml.j2') | from_yaml | combine(ceph_cluster_chart_values, recursive=True) }}"
     wait: "{{ wait }}"
 
-- name: Create ingress
-  community.kubernetes.k8s:
-    state: "{{ ceph_state }}"
-    namespace: "{{ namespace }}"
-    template: ingress.yaml.j2
-
 - name: Check ceph status
   shell: kubectl -n {{ namespace }} exec -i deploy/rook-ceph-tools -- ceph status 
   register: ceph_status
