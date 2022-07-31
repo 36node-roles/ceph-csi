@@ -1,15 +1,15 @@
-ingress:
-  dashboard:
-    annotations:
-      cert-manager.io/cluster-issuer: "{{ cert_issuer }}"
-      kubernetes.io/ingress.class: "{{ ingress_class }}"
-    host:
-      name: "{{ ceph_dashboard_domain }}"
-      path: "/"
-    tls:
-      - hosts:
-          - "{{ ceph_dashboard_domain }}"
-        secretName: ceph-dashboard-tls
+# ingress:
+#  dashboard:
+#    annotations:
+#      cert-manager.io/cluster-issuer: "{{ cert_issuer }}"
+#      kubernetes.io/ingress.class: "{{ ingress_class }}"
+#    host:
+#      name: "{{ ceph_dashboard_domain }}"
+#      path: "/"
+#    tls:
+#      - hosts:
+#          - "{{ ceph_dashboard_domain }}"
+#        secretName: ceph-dashboard-tls
 cephBlockPools:
   - name: ceph-blockpool
     # see https://github.com/rook/rook/blob/master/Documentation/ceph-pool-crd.md#spec for available configuration
@@ -55,7 +55,74 @@ cephBlockPools:
         # in hyperconverged settings where the volume is mounted on the same node as the osds.
         csi.storage.k8s.io/fstype: ext4
 cephClusterSpec:
+  dashboard:
+    enable: true
+    ssl: false
   storage: 
     deviceFilter: "{{ ceph_device }}"
+  resources:
+    mgr:
+      limits:
+        cpu: "1000m"
+        memory: "1Gi"
+      requests:
+        cpu: "50m"
+        memory: "128Mi"
+    mon:
+      limits:
+        cpu: "2000m"
+        memory: "2Gi"
+      requests:
+        cpu: "50m"
+        memory: "128Mi"
+    osd:
+      limits:
+        cpu: "2000m"
+        memory: "4Gi"
+      requests:
+        cpu: "100m"
+        memory: "128Mi"
+    prepareosd:
+      limits:
+        cpu: "500m"
+        memory: "400Mi"
+      requests:
+        cpu: "100m"
+        memory: "50Mi"
+    mgr-sidecar:
+      limits:
+        cpu: "500m"
+        memory: "100Mi"
+      requests:
+        cpu: "20m"
+        memory: "40Mi"
+    crashcollector:
+      limits:
+        cpu: "500m"
+        memory: "60Mi"
+      requests:
+        cpu: "20m"
+        memory: "60Mi"
+    logcollector:
+      limits:
+        cpu: "500m"
+        memory: "1Gi"
+      requests:
+        cpu: "10m"
+        memory: "100Mi"
+    cleanup:
+      limits:
+        cpu: "500m"
+        memory: "1Gi"
+      requests:
+        cpu: "50m"
+        memory: "100Mi"
 toolbox:
   enabled: true
+  resources:
+    requests:
+      cpu: 10m
+      memory: 100Mi
+    limits:
+      cpu: 200m
+      memory: 1000Mi
