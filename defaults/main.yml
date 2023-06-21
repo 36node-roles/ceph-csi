@@ -3,12 +3,12 @@ namespace: ceph
 state: present
 ingress_class: traefik
 wait: no
-domain: aliyun.36node.com
+domain: mycluster.36node.com
 
 ceph_dashboard_domain: ceph.{{ domain }}
 cert_issuer: letsencrypt-http
 
-rook_version: v1.9.5
+rook_version: v1.10.11
 
 ceph_state: "{{ state }}"
 ceph_device: vdb

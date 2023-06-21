@@ -1,15 +1,15 @@
-# ingress:
-#  dashboard:
-#    annotations:
-#      cert-manager.io/cluster-issuer: "{{ cert_issuer }}"
-#      kubernetes.io/ingress.class: "{{ ingress_class }}"
-#    host:
-#      name: "{{ ceph_dashboard_domain }}"
-#      path: "/"
-#    tls:
-#      - hosts:
-#          - "{{ ceph_dashboard_domain }}"
-#        secretName: ceph-dashboard-tls
+ingress:
+ dashboard:
+   annotations:
+     cert-manager.io/cluster-issuer: "{{ cert_issuer }}"
+     kubernetes.io/ingress.class: "{{ ingress_class }}"
+   host:
+     name: "{{ ceph_dashboard_domain }}"
+     path: "/"
+   tls:
+     - hosts:
+         - "{{ ceph_dashboard_domain }}"
+       secretName: ceph-dashboard-tls
 cephBlockPools:
   - name: ceph-blockpool
     # see https://github.com/rook/rook/blob/master/Documentation/ceph-pool-crd.md#spec for available configuration

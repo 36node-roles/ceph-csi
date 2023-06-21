@@ -32,7 +32,7 @@
   register: ceph_status
   until: ceph_status.rc == 0 and 'HEALTH_OK' in ceph_status.stdout
   delay: 180
-  retries: 10
+  retries: 20
   when: wait
 
 # - name: debug
