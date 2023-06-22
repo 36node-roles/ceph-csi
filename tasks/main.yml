@@ -1,7 +1,7 @@
 ---
 - name: Add rook-release chart repo
   community.kubernetes.helm_repository:
-    state: present
+    state: "{{ ceph_state }}"
     name: rook-release
     repo_url: "https://charts.rook.io/release"
 
@@ -25,7 +25,8 @@
     chart_version: "{{ rook_version }}"
     chart_ref: rook-release/rook-ceph-cluster
     values: "{{ lookup('template', 'rook-ceph-cluster-values.yaml.j2') | from_yaml | combine(ceph_cluster_chart_values, recursive=True) }}"
-    wait: "{{ wait }}"
+    wait: no
+    # wait: "{{ wait }}"
 
 - name: Check ceph status
   shell: kubectl -n {{ namespace }} exec -i deploy/rook-ceph-tools -- ceph status 
@@ -33,7 +34,7 @@
   until: ceph_status.rc == 0 and 'HEALTH_OK' in ceph_status.stdout
   delay: 180
   retries: 20
-  when: wait
+  when: wait and ceph_state == 'present'
 
 # - name: debug
 #   debug:

@@ -1,15 +1,16 @@
 ingress:
- dashboard:
-   annotations:
-     cert-manager.io/cluster-issuer: "{{ cert_issuer }}"
-     kubernetes.io/ingress.class: "{{ ingress_class }}"
-   host:
-     name: "{{ ceph_dashboard_domain }}"
-     path: "/"
-   tls:
-     - hosts:
-         - "{{ ceph_dashboard_domain }}"
-       secretName: ceph-dashboard-tls
+  dashboard:
+    annotations:
+      cert-manager.io/cluster-issuer: "{{ cert_issuer }}"
+    spec:
+      ingressClassName: "{{ ingress_class }}"
+    host:
+      name: "{{ ceph_dashboard_domain }}"
+      path: "/"
+    tls:
+      - hosts:
+          - "{{ ceph_dashboard_domain }}"
+        secretName: ceph-dashboard-tls
 cephBlockPools:
   - name: ceph-blockpool
     # see https://github.com/rook/rook/blob/master/Documentation/ceph-pool-crd.md#spec for available configuration
@@ -56,7 +57,7 @@ cephBlockPools:
         csi.storage.k8s.io/fstype: ext4
 cephClusterSpec:
   dashboard:
-    enable: true
+    enabled: true
     ssl: false
   storage: 
     deviceFilter: "{{ ceph_device }}"
@@ -211,4 +212,4 @@ cephObjectStores:
       # see https://github.com/rook/rook/blob/master/Documentation/ceph-object-bucket-claim.md#storageclass for available configuration
       parameters:
         # note: objectStoreNamespace and objectStoreName are configured by the chart
-        region: us-east-1
+        region: cn
